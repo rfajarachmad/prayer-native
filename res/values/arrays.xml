@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="language">
+        <item name="id">Bahasa</item>
+        <item name="en">English</item>
+    </string-array>
+    
+    <string-array name="languageValues">
+        <item name="id">id</item>
+        <item name="en">en</item>
+    </string-array>
+    
+    <string-array name="calulationMethod">
+        <item name="MWL">Muslim World League</item>
+        <item name="ISNA">Islamic Society of North America</item>
+        <item name="Egypt">Egyptian General Authority of Survey</item>
+        <item name="Makkah">Umm al-Qura University, Makkah</item>
+        <item name="Karachi">University of Islamic Sciences, Karachi</item>
+        <item name="Tehran">Institute of Geophysics, University of Tehran</item>
+        <item name="Jafari">Shia Ithna Ashari (Ja`fari)</item>
+    </string-array>
+    
+    <string-array name="calulationMethodValues">
+        <item name="MWL">3</item>
+        <item name="ISNA">2</item>
+        <item name="Egypt">5</item>
+        <item name="Makkah">4</item>
+        <item name="Karachi">1</item>
+        <item name="Tehran">6</item>
+        <item name="Jafari">7</item>
+    </string-array>
+    
+    <string-array name="asrMethod">
+        <item name="Standard">Shafii, Maliki, Jafari and Hanbali</item>
+        <item name="Hanafi">Hanafi</item>
+    </string-array>
+    
+    <string-array name="ashMethodValues">
+        <item name="Standard">0</item>
+        <item name="Hanafi">1</item>
+    </string-array>
+    
+</resources>
