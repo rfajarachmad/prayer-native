@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import net.fajarachmad.prayer.R;
-import net.fajarachmad.prayer.R.id;
-import net.fajarachmad.prayer.R.layout;
 import net.fajarachmad.prayer.model.Location;
 import net.fajarachmad.prayer.util.GPSTracker;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -177,6 +175,7 @@ public class LocationSettingActivity extends Activity {
 			locations = objects;
 		}
 		
+		@SuppressLint("InflateParams")
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;

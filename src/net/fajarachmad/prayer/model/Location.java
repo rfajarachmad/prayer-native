@@ -75,6 +75,7 @@ public class Location implements Parcelable {
 		
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
 	    public Location createFromParcel(Parcel in) {
 	        return new Location(in);
