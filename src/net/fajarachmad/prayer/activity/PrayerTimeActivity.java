@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
 import net.fajarachmad.prayer.R;
 import net.fajarachmad.prayer.model.Location;
 import net.fajarachmad.prayer.model.Prayer;
@@ -16,9 +15,8 @@ import net.fajarachmad.prayer.notification.NotificationPublisher;
 import net.fajarachmad.prayer.util.GPSTracker;
 import net.fajarachmad.prayer.util.HttpRequestUtil;
 import net.fajarachmad.prayer.util.PrayTime;
-
 import org.json.JSONObject;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -27,6 +25,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -48,9 +47,9 @@ public class PrayerTimeActivity extends Activity {
 
 	/** Called when the activity is first created. */
 	private Prayer prayer;
-	private int timezone;
 	private CountDownTimer timer;
 	private NotificationManager notificationManager;
+	private SharedPreferences sharedPrefs;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +57,9 @@ public class PrayerTimeActivity extends Activity {
 		// Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.prayer_time_layout);
-
+		
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
@@ -66,28 +67,55 @@ public class PrayerTimeActivity extends Activity {
 
 		Location newLocation = getIntent().getParcelableExtra(Location.class.getName());
 		prayer = new Prayer();
+		
+		populatePreviousOrDefaultValue(prayer);
+		
 		notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);;
 		
 		Location currentLocation;
 		if (newLocation == null) {
-			currentLocation = getCurrentLocation();
+			currentLocation = getCurrentLocation(prayer);
 		} else {
 			currentLocation = newLocation;
 		}
 
 		prayer.setLocation(currentLocation);
-
-		timezone = getTimezone(prayer);
+		
+		prayer.getLocation().setTimezone(getTimezone(prayer));;
 		try {
-			getPrayTime(prayer, timezone);
+			getPrayTime(prayer);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
+		save(prayer);
 		renderPrayerValue(prayer);
 		findViewById(R.id.location_address).setOnClickListener(
 				new LocationButtonListener());
 
+	}
+	
+	private void save(Prayer prayer) {
+		Editor editor = sharedPrefs.edit();
+		editor.putString("addressLine", prayer.getLocation().getAddressLine());
+		editor.putString("city", prayer.getLocation().getCity());
+		editor.putString("country", prayer.getLocation().getCountry());
+		editor.putInt("timezone", prayer.getLocation().getTimezone());
+		editor.putString("postalCode", prayer.getLocation().getPostalCode());
+		editor.putFloat("latitude", Double.valueOf(prayer.getLocation().getLatitude()).floatValue());
+		editor.putFloat("longitude", Double.valueOf(prayer.getLocation().getLongitude()).floatValue());
+		
+		editor.commit();
+	}
+	
+	
+	private void populatePreviousOrDefaultValue(Prayer prayer) {
+		prayer.getLocation().setAddressLine(sharedPrefs.getString("addressLine", ""));
+		prayer.getLocation().setCity(sharedPrefs.getString("city", "South Jakarta"));
+		prayer.getLocation().setCountry(sharedPrefs.getString("country", "Indonesia"));
+		prayer.getLocation().setLatitude(sharedPrefs.getFloat("latitude", Double.valueOf(-6.2087634).floatValue()));
+		prayer.getLocation().setLongitude(sharedPrefs.getFloat("longitude", Double.valueOf(106.84559899999999).floatValue()));
+		prayer.getLocation().setPostalCode(sharedPrefs.getString("postalCode", ""));
+		prayer.getLocation().setTimezone(sharedPrefs.getInt("timezone", 7));
 	}
 
 	@Override
@@ -96,10 +124,10 @@ public class PrayerTimeActivity extends Activity {
 		System.exit(0);
 	}
 
-	private void getPrayTime(Prayer prayer, int timezone) throws ParseException {
+	private void getPrayTime(Prayer prayer) throws ParseException {
 		List<PrayerTime> prayerTimes = getPrayerTime(
 				prayer.getLocation().getLatitude(), prayer.getLocation().getLongitude(),
-				timezone);
+				prayer.getLocation().getTimezone());
 		prayer.setPrayerTimes(prayerTimes);
 
 		try {
@@ -132,10 +160,9 @@ public class PrayerTimeActivity extends Activity {
 
 	private int getTimezone(Prayer prayer) {
 
-		int timeZoneOffset = 0;
-		TimeZone timezone = TimeZone.getDefault();
-		timeZoneOffset = timezone.getRawOffset() / (60 * 60 * 1000);
-		if (prayer.getLocation().getLatitude() != 0
+		int timeZoneOffset = prayer.getLocation().getTimezone();
+		boolean isAutoDetectLocation = sharedPrefs.getBoolean("prefAutoDetectLocation", true); 
+		if (isAutoDetectLocation && prayer.getLocation().getLatitude() != 0
 				&& prayer.getLocation().getLongitude() != 0) {
 			try {
 				Date date = new Date();
@@ -313,43 +340,46 @@ public class PrayerTimeActivity extends Activity {
 		}
 	}
 
-	private Location getCurrentLocation() {
+	private Location getCurrentLocation(Prayer prayer) {
 		GPSTracker gpsTracker = new GPSTracker(this);
-		Location location = new Location();
-		if (gpsTracker.getIsGPSTrackingEnabled()) {
-			double latitude = gpsTracker.getLatitude();
-			double longitude = gpsTracker.getLongitude();
+		Location location = prayer.getLocation();
+		boolean isAutoDetectLocation = sharedPrefs.getBoolean("prefAutoDetectLocation", true);
+		if (isAutoDetectLocation) {
+			if (gpsTracker.getIsGPSTrackingEnabled()) {
+				double latitude = gpsTracker.getLatitude();
+				double longitude = gpsTracker.getLongitude();
 
-			String country = gpsTracker.getCountryName(this);
+				String country = gpsTracker.getCountryName(this);
 
-			String city = null;
-			String postalCode;
-			String addressLine;
-			if (country != null) {
-				city = gpsTracker.getLocality(this);
-				postalCode = gpsTracker.getPostalCode(this);
-				addressLine = gpsTracker.getAddressLine(this);
-				location.setCity(city);
-				location.setAddressLine(addressLine);
-				location.setPostalCode(postalCode);
-				location.setCountry(country);
+				String city = null;
+				String postalCode;
+				String addressLine;
+				if (country != null) {
+					city = gpsTracker.getLocality(this);
+					postalCode = gpsTracker.getPostalCode(this);
+					addressLine = gpsTracker.getAddressLine(this);
+					location.setCity(city);
+					location.setAddressLine(addressLine);
+					location.setPostalCode(postalCode);
+					location.setCountry(country);
+				}
+
+				Log.i("Prayer", "Latitude: " + latitude);
+				Log.i("Prayer", "Longitude: " + longitude);
+				Log.i("Prayer", "Country: " + country);
+				Log.i("Prayer", "City: " + city);
+
+				location.setLatitude(latitude);
+				location.setLongitude(longitude);
+
+			} else {
+				// can't get location
+				// GPS or Network is not enabled
+				// Ask user to enable GPS/network in settings
+				gpsTracker.showSettingsAlert();
 			}
-
-			Log.i("Prayer", "Latitude: " + latitude);
-			Log.i("Prayer", "Longitude: " + longitude);
-			Log.i("Prayer", "Country: " + country);
-			Log.i("Prayer", "City: " + city);
-
-			location.setLatitude(latitude);
-			location.setLongitude(longitude);
-
-		} else {
-			// can't get location
-			// GPS or Network is not enabled
-			// Ask user to enable GPS/network in settings
-			gpsTracker.showSettingsAlert();
 		}
-
+		
 		return location;
 	}
 
@@ -361,9 +391,18 @@ public class PrayerTimeActivity extends Activity {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(now);
 		
+		int[] offsets = new int[7];
+		offsets[0] = prayer.getSetting().getFajrtuning();
+		offsets[1] = 0;
+		offsets[2] = prayer.getSetting().getDhuhrtuning();
+		offsets[3] = prayer.getSetting().getAsrtuning();
+		offsets[4] = 0;
+		offsets[5] = prayer.getSetting().getMaghribtuning();
+		offsets[6] = prayer.getSetting().getIshatuning();
+		
 		prayers.setCalcMethod(prayer.getSetting().getMethod());
 		prayers.setAsrJuristic(prayer.getSetting().getAsrMethod());
-		
+		prayers.tune(offsets);
 		ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal, latitude,
 				longitude, timezone);
 		ArrayList<String> prayerNames = prayers.getTimeNames();
@@ -467,24 +506,45 @@ public class PrayerTimeActivity extends Activity {
 	}
 	
 	private void setSetting() {
-		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		String language = sharedPrefs.getString("prefLanguage", "en");
 		int method = Integer.valueOf(sharedPrefs.getString("prefCalculationMethod", "3"));
 		int asrMethod = Integer.valueOf(sharedPrefs.getString("prefAsrMethod", "0"));
 		boolean disableNotification = sharedPrefs.getBoolean("prefDisabledNotification", false);
+		float fajrtuning = sharedPrefs.getFloat("tune_fajr", 0);
+		float dhuhrtuning = sharedPrefs.getFloat("tune_dhuhr", 0);
+		float asrtuning = sharedPrefs.getFloat("tune_asr", 0);
+		float maghribtuning = sharedPrefs.getFloat("tune_maghrib", 0);
+		float ishatuning = sharedPrefs.getFloat("tune_isha", 0);
+		
+		List<String> values = new ArrayList<String>();
+		for (int i = -60; i <= 60; i++) {
+			values.add(String.valueOf(i));
+		}
 		
 		prayer.getSetting().setLanguage(language);
 		prayer.getSetting().setMethod(method);
 		prayer.getSetting().setAsrMethod(asrMethod);
 		prayer.getSetting().setDisablednotification(disableNotification);
+		prayer.getSetting().setFajrtuning(resolveTuningValue(Float.valueOf(fajrtuning), values));
+		prayer.getSetting().setDhuhrtuning(resolveTuningValue(Float.valueOf(dhuhrtuning), values));
+		prayer.getSetting().setAsrtuning(resolveTuningValue(Float.valueOf(asrtuning), values));
+		prayer.getSetting().setMaghribtuning(resolveTuningValue(Float.valueOf(maghribtuning), values));
+		prayer.getSetting().setIshatuning(resolveTuningValue(Float.valueOf(ishatuning), values));
 		
 		try {
-			getPrayTime(prayer, timezone);
+			getPrayTime(prayer);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		renderPrayerValue(prayer);
+	}
+	
+	private int resolveTuningValue(float value, List<String> values) {
+		int index = (int) (value * values.toArray(new String[0]).length);
+		index = Math.min(index, values.toArray(new String[0]).length - 1);
+		return Integer.valueOf(values.toArray(new String[0])[index]);
+		
 	}
 
 	class LocationButtonListener implements OnClickListener {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import net.fajarachmad.prayer.R;
 import net.fajarachmad.prayer.model.Location;
 import net.fajarachmad.prayer.util.GPSTracker;
@@ -12,9 +13,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -46,17 +49,19 @@ public class LocationSettingActivity extends Activity {
     // ArrayList for Listview
     ArrayList<HashMap<String, String>> productList;
 	
+    SharedPreferences sharedPrefs;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location_setting_layout);
 		
 		// Listview Data
-         
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         
-        geocoder = new Geocoder(this, new Locale("id"));
+        geocoder = new Geocoder(this, new Locale(sharedPrefs.getString("prefLanguage", "en")));
         // Adding items to listview
         /*adapter = new ArrayAdapter<String>(this, R.layout.list_location_layout, R.id.product_name, products);
         lv.setAdapter(adapter);*/   
@@ -113,7 +118,9 @@ public class LocationSettingActivity extends Activity {
 				Location selected = (Location) parent.getItemAtPosition(position);
 				Intent intent = new Intent(LocationSettingActivity.this, PrayerTimeActivity.class);
 				intent.putExtra(Location.class.getName(), selected);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); 
                 startActivity(intent);
+                finish();
 			}
         	
         });

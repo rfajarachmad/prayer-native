@@ -11,6 +11,7 @@ public class Location implements Parcelable {
 	private String city = "South Jakarta";
 	private String postalCode;
 	private String addressLine;
+	private int timezone = 7;
 	
 	public Location() {};
 	
@@ -75,6 +76,14 @@ public class Location implements Parcelable {
 		
 	}
 	
+	public int getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(int timezone) {
+		this.timezone = timezone;
+	}
+
 	@SuppressWarnings("rawtypes")
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
 	    public Location createFromParcel(Parcel in) {

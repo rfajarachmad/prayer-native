@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Prayer {
 	private Date today = new Date();
-	private Location location;
+	private Location location = new Location();
 	private PrayerTime currentPrayer;
 	private PrayerTime nextPrayer;
 	private Setting setting = new Setting();
