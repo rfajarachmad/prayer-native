@@ -32,6 +32,10 @@
             android:name="net.fajarachmad.prayer.activity.SettingActivity"
             android:label="@string/menu_settings">
         </activity>
+        <activity
+            android:name="net.fajarachmad.prayer.activity.NotificationSetupActivity"
+            android:label="Notification Setup">
+        </activity>
     </application>
 
 </manifest>

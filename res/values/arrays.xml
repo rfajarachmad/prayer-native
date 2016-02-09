@@ -40,10 +40,27 @@
         <item name="Hanafi">1</item>
     </string-array>
     
-     <string-array name="slider_summaries">
-        <item>-60</item>
-        <item>-59</item>
-        <item>-58</item>
-    </string-array>
-    
+     <string-array name="sounds">
+         <item name="adzan">Adzan</item>
+     </string-array>
+     
+     <string-array name="soundValues">
+         <item name="adzan">file://adzan.mp3</item>
+     </string-array>
+    	
+     <string-array name="notifyBefore">
+         <item name="5">5 Mins</item>
+         <item name="10">10 Mins</item>
+         <item name="15">15 Mins</item>
+         <item name="30">30 Mins</item>
+         <item name="60">60 Mins</item>
+     </string-array>
+     
+     <string-array name="notifyBeforeValue">
+         <item name="5">5</item>
+         <item name="10">10</item>
+         <item name="15">15</item>
+         <item name="30">30</item>
+         <item name="60">60</item>
+     </string-array>
 </resources>

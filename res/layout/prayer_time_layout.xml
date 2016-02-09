@@ -111,6 +111,7 @@
                 android:layout_height="wrap_content" >
 
                 <TableRow
+                    android:id="@+id/tbl_row_fajr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >

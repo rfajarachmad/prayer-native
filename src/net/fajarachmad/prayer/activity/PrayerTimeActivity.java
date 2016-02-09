@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
+
 import net.fajarachmad.prayer.R;
 import net.fajarachmad.prayer.model.Location;
 import net.fajarachmad.prayer.model.Prayer;
@@ -15,8 +15,9 @@ import net.fajarachmad.prayer.notification.NotificationPublisher;
 import net.fajarachmad.prayer.util.GPSTracker;
 import net.fajarachmad.prayer.util.HttpRequestUtil;
 import net.fajarachmad.prayer.util.PrayTime;
+
 import org.json.JSONObject;
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -91,6 +92,16 @@ public class PrayerTimeActivity extends Activity {
 		renderPrayerValue(prayer);
 		findViewById(R.id.location_address).setOnClickListener(
 				new LocationButtonListener());
+		
+		findViewById(R.id.tbl_row_fajr).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(PrayerTimeActivity.this, NotificationSetupActivity.class);
+				i.putExtra("PrayID", "fajr");
+	            startActivityForResult(i, 2);
+			}
+		});;
 
 	}
 	
