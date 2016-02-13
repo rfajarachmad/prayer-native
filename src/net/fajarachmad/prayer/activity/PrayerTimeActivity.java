@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PrayerTimeActivity extends Activity implements AppConstant{
@@ -119,7 +120,7 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 		findViewById(R.id.location_address).setOnClickListener(
 				new LocationButtonListener());
 		
-		findViewById(R.id.tbl_row_fajr).setOnClickListener(new OnClickListener() {
+		findViewById(R.id.cardview_fajr).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -130,7 +131,7 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 			}
 		});
 		
-		findViewById(R.id.tbl_row_dhuhr).setOnClickListener(new OnClickListener() {
+		findViewById(R.id.cardview_dhuhr).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -141,7 +142,7 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 			}
 		});
 		
-		findViewById(R.id.tbl_row_asr).setOnClickListener(new OnClickListener() {
+		findViewById(R.id.cardview_asr).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -152,7 +153,7 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 			}
 		});
 		
-		findViewById(R.id.tbl_row_maghrib).setOnClickListener(new OnClickListener() {
+		findViewById(R.id.cardview_maghrib).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -163,7 +164,7 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 			}
 		});
 
-		findViewById(R.id.tbl_row_isha).setOnClickListener(new OnClickListener() {
+		findViewById(R.id.cardview_isha).setOnClickListener(new OnClickListener() {
 	
 			@Override
 			public void onClick(View v) {
@@ -547,10 +548,9 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 				//send notification
 				cancelNotification(i);
 				cancelNotification(i+10);
-				boolean isNotificationDisable = sharedPrefs.getBoolean(PREF_DISABLED_NOTIFICATION_KEY, false);
-				if (prayerDateaTime.compareTo(now) > 0 && !isNotificationDisable) {
+				if (prayerDateaTime.compareTo(now) > 0) {
 					long delay = prayerDateaTime.getTime() - now.getTime();
-					sendPrayAlarm(i, prayName, delay);
+					sendPrayAlarm(i, prayId, prayName, delay);
 				}
 			}
 		}
@@ -559,17 +559,22 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 	}
 	
 	
-	private void sendPrayAlarm(int id, String parayerName, long delay){
+	private void sendPrayAlarm(int id, String prayId, String parayerName, long delay){
 		String message = getResources().getString(R.string.notif_on_prayer)+parayerName;
 		String title = getResources().getString(R.string.notif_title);
+		boolean isNotificationDisable = sharedPrefs.getBoolean(PREF_DISABLED_NOTIFICATION_KEY, false);
 		
-		switch (parayerName) {
+		switch (prayId) {
 		case FAJR_ID:
-			if (sharedPrefs.getBoolean(PREF_FAJR_ONPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_FAJR_ONPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				String sound = sharedPrefs.getString(PREF_FAJR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 				scheduleNotification(getNotification(title, message, sound), id, Long.valueOf(delay).intValue());
+				((ImageView)findViewById(R.id.onpray_icon_fajr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
+			} else {
+				((ImageView)findViewById(R.id.onpray_icon_fajr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 			}
-			if (sharedPrefs.getBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, false)) {
+
+			if (sharedPrefs.getBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				int beforeTimeMinute = Integer.valueOf(sharedPrefs.getString(PREF_FAJR_BEFOREPRAY_NOTIFY_KEY, "0"));
 				long beforeTimeMilis = beforeTimeMinute * 60  * 1000;
 				long newDelay = delay - beforeTimeMilis;
@@ -577,16 +582,22 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 					String sound = sharedPrefs.getString(PREF_FAJR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 					message = beforeTimeMinute+" "+getResources().getString(R.string.notif_before_pray)+" "+parayerName;
 					scheduleNotification(getNotification(title, message, sound), id+10, Long.valueOf(newDelay).intValue());
+					((ImageView)findViewById(R.id.before_pray_icon_fajr)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 				}
 				
+			} else {
+				((ImageView)findViewById(R.id.before_pray_icon_fajr)).setImageDrawable(null);
 			}
 			break;
 		case DHUHR_ID:
-			if (sharedPrefs.getBoolean(PREF_DHUHR_ONPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_DHUHR_ONPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				String sound = sharedPrefs.getString(PREF_DHUHR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 				scheduleNotification(getNotification(title, message, sound), id, Long.valueOf(delay).intValue());
+				((ImageView)findViewById(R.id.onpray_icon_dhuhr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
+			} else {
+				((ImageView)findViewById(R.id.onpray_icon_dhuhr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 			}
-			if (sharedPrefs.getBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				int beforeTimeMinute = Integer.valueOf(sharedPrefs.getString(PREF_DHUHR_BEFOREPRAY_NOTIFY_KEY, "0"));
 				long beforeTimeMilis = beforeTimeMinute * 60  * 1000;
 				long newDelay = delay - beforeTimeMilis;
@@ -594,16 +605,21 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 					String sound = sharedPrefs.getString(PREF_DHUHR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 					message = beforeTimeMinute+" "+getResources().getString(R.string.notif_before_pray)+" "+parayerName;
 					scheduleNotification(getNotification(title, message, sound), id+10, Long.valueOf(newDelay).intValue());
+					((ImageView)findViewById(R.id.before_pray_icon_dhuhr)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 				}
-				
+			} else {
+				((ImageView)findViewById(R.id.before_pray_icon_dhuhr)).setImageDrawable(null);
 			}
 			break;
 		case ASR_ID:
-			if (sharedPrefs.getBoolean(PREF_ASR_ONPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_ASR_ONPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				String sound = sharedPrefs.getString(PREF_ASR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 				scheduleNotification(getNotification(title, message, sound), id, Long.valueOf(delay).intValue());
+				((ImageView)findViewById(R.id.onpray_icon_asr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
+			} else {
+				((ImageView)findViewById(R.id.onpray_icon_asr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 			}
-			if (sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				int beforeTimeMinute = Integer.valueOf(sharedPrefs.getString(PREF_ASR_BEFOREPRAY_NOTIFY_KEY, "0"));
 				long beforeTimeMilis = beforeTimeMinute * 60  * 1000;
 				long newDelay = delay - beforeTimeMilis;
@@ -611,16 +627,22 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 					String sound = sharedPrefs.getString(PREF_ASR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 					message = beforeTimeMinute+" "+getResources().getString(R.string.notif_before_pray)+" "+parayerName;
 					scheduleNotification(getNotification(title, message, sound), id+10, Long.valueOf(newDelay).intValue());
+					((ImageView)findViewById(R.id.before_pray_icon_asr)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 				}
 				
+			} else {
+				((ImageView)findViewById(R.id.before_pray_icon_asr)).setImageDrawable(null);
 			}
 			break;
 		case MAGHRIB_ID:
-			if (sharedPrefs.getBoolean(PREF_MAGHRIB_ONPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_MAGHRIB_ONPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				String sound = sharedPrefs.getString(PREF_MAGHRIB_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 				scheduleNotification(getNotification(title, message, sound), id, Long.valueOf(delay).intValue());
+				((ImageView)findViewById(R.id.onpray_icon_maghrib)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
+			} else {
+				((ImageView)findViewById(R.id.onpray_icon_maghrib)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 			}
-			if (sharedPrefs.getBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				int beforeTimeMinute = Integer.valueOf(sharedPrefs.getString(PREF_MAGHRIB_BEFOREPRAY_NOTIFY_KEY, "0"));
 				long beforeTimeMilis = beforeTimeMinute * 60  * 1000;
 				long newDelay = delay - beforeTimeMilis;
@@ -628,16 +650,22 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 					String sound = sharedPrefs.getString(PREF_MAGHRIB_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 					message = beforeTimeMinute+" "+getResources().getString(R.string.notif_before_pray)+" "+parayerName;
 					scheduleNotification(getNotification(title, message, sound), id+10, Long.valueOf(newDelay).intValue());
+					((ImageView)findViewById(R.id.before_pray_icon_maghrib)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 				}
 				
+			} else {
+				((ImageView)findViewById(R.id.before_pray_icon_maghrib)).setImageDrawable(null);
 			}
 			break;
 		case ISHA_ID:
-			if (sharedPrefs.getBoolean(PREF_ISHA_ONPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_ISHA_ONPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				String sound = sharedPrefs.getString(PREF_ISHA_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 				scheduleNotification(getNotification(title, message, sound), id, Long.valueOf(delay).intValue());
+				((ImageView)findViewById(R.id.onpray_icon_isha)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
+			} else {
+				((ImageView)findViewById(R.id.onpray_icon_isha)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 			}
-			if (sharedPrefs.getBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, false)) {
+			if (sharedPrefs.getBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, false) && !isNotificationDisable) {
 				int beforeTimeMinute = Integer.valueOf(sharedPrefs.getString(PREF_ISHA_BEFOREPRAY_NOTIFY_KEY, "0"));
 				long beforeTimeMilis = beforeTimeMinute * 60  * 1000;
 				long newDelay = delay - beforeTimeMilis;
@@ -645,8 +673,11 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 					String sound = sharedPrefs.getString(PREF_ISHA_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 					message = beforeTimeMinute+" "+getResources().getString(R.string.notif_before_pray)+" "+parayerName;
 					scheduleNotification(getNotification(title, message, sound), id+10, Long.valueOf(newDelay).intValue());
+					((ImageView)findViewById(R.id.before_pray_icon_isha)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 				}
 				
+			} else {
+				((ImageView)findViewById(R.id.before_pray_icon_isha)).setImageDrawable(null);
 			}
 			break;
 		default:

@@ -105,138 +105,302 @@
                 android:layout_height="wrap_content" >
 
                 <TableRow
-                    android:id="@+id/tbl_row_fajr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
-
-                    <TextView
-                        android:id="@+id/prayer_fajr_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="end"
-                        android:text="@string/prayer_fajr_name" />
-
-                    <TextView
-                        android:id="@+id/prayer_fajr_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="start" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
+					
+                    <!-- Fajr -->
+                	<android.support.v7.widget.CardView
+				        android:id="@+id/cardview_fajr"
+				        android:layout_width="wrap_content"
+		        		android:layout_height="wrap_content"
+		        		android:clickable="true">
+		                
+		                <RelativeLayout
+		            		android:layout_width="match_parent"
+		            		android:layout_height="wrap_content"
+				            android:padding="16dp">
+		                    
+		                    <LinearLayout 
+		                        android:id="@+id/notif_icon_fajr"
+		                        android:layout_width="wrap_content"
+		    					android:layout_height="wrap_content"
+		    					android:orientation="vertical" >
+		            			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/onpray_icon_fajr"
+					                android:layout_alignParentLeft="true"
+					                android:layout_alignParentTop="true"
+					                android:layout_marginRight="16dp"
+					                android:src="@drawable/volume_mute"/>
+					 			
+					 			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/before_pray_icon_fajr"
+					                android:paddingTop="10dp"
+					                android:layout_below="@+id/onpray_icon_fajr"
+					                android:layout_marginRight="16dp"/>            
+		                    </LinearLayout>
+		 
+		            
+				            <TextView
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:id="@+id/prayer_fajr_name"
+				                android:layout_toRightOf="@+id/notif_icon_fajr"
+				                android:layout_alignParentTop="true"
+				                android:textSize="15sp"
+				                android:text="@string/prayer_fajr_name"
+				                />
+				 
+				            <TextView
+				                android:id="@+id/prayer_fajr_time"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_toRightOf="@+id/notif_icon_fajr"
+				                android:layout_below="@+id/prayer_fajr_name"
+				                />
+				        </RelativeLayout>
+					</android.support.v7.widget.CardView>
+					
+                	<!-- Dhuhr -->
+                	<android.support.v7.widget.CardView
+				        android:id="@+id/cardview_dhuhr"
+				        android:layout_width="wrap_content"
+		        		android:layout_height="wrap_content"
+		        		android:clickable="true">
+		                
+		                <RelativeLayout
+		            		android:layout_width="match_parent"
+		            		android:layout_height="wrap_content"
+				            android:padding="16dp">
+		                    
+		                    <LinearLayout 
+		                        android:id="@+id/notif_icon_dhuhr"
+		                        android:layout_width="wrap_content"
+		    					android:layout_height="wrap_content"
+		    					android:orientation="vertical" >
+		            			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/onpray_icon_dhuhr"
+					                android:layout_alignParentLeft="true"
+					                android:layout_alignParentTop="true"
+					                android:layout_marginRight="16dp"
+					                android:src="@drawable/volume_mute"/>
+					 			
+					 			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/before_pray_icon_dhuhr"
+					                android:paddingTop="10dp"
+					                android:layout_below="@+id/onpray_icon_dhuhr"
+					                android:layout_marginRight="16dp"/>            
+		                    </LinearLayout>
+		 
+		            
+				            <TextView
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:id="@+id/prayer_dhuhr_name"
+				                android:layout_toRightOf="@+id/notif_icon_dhuhr"
+				                android:layout_alignParentTop="true"
+				                android:textSize="15sp"
+				                android:text="@string/prayer_dhuhr_name"
+				                />
+				 
+				            <TextView
+				                android:id="@+id/prayer_dhuhr_time"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_toRightOf="@+id/notif_icon_dhuhr"
+				                android:layout_below="@+id/prayer_dhuhr_name"
+				                />
+				        </RelativeLayout>
+					</android.support.v7.widget.CardView>
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tbl_row_dhuhr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
+                	
+                    <!-- Asr -->
+                	<android.support.v7.widget.CardView
+				        android:id="@+id/cardview_asr"
+				        android:layout_width="wrap_content"
+		        		android:layout_height="wrap_content"
+		        		android:clickable="true">
+		                
+		                <RelativeLayout
+		            		android:layout_width="match_parent"
+		            		android:layout_height="wrap_content"
+				            android:padding="16dp">
+		                    
+		                    <LinearLayout 
+		                        android:id="@+id/notif_icon_asr"
+		                        android:layout_width="wrap_content"
+		    					android:layout_height="wrap_content"
+		    					android:orientation="vertical" >
+		            			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/onpray_icon_asr"
+					                android:layout_alignParentLeft="true"
+					                android:layout_alignParentTop="true"
+					                android:layout_marginRight="16dp"
+					                android:src="@drawable/volume_mute"/>
+					 			
+					 			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/before_pray_icon_asr"
+					                android:paddingTop="10dp"
+					                android:layout_below="@+id/onpray_icon_asr"
+					                android:layout_marginRight="16dp"/>            
+		                    </LinearLayout>
+		 
+		            
+				            <TextView
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:id="@+id/prayer_asr_name"
+				                android:layout_toRightOf="@+id/notif_icon_asr"
+				                android:layout_alignParentTop="true"
+				                android:textSize="15sp"
+				                android:text="@string/prayer_asr_name"
+				                />
+				 
+				            <TextView
+				                android:id="@+id/prayer_asr_time"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_toRightOf="@+id/notif_icon_asr"
+				                android:layout_below="@+id/prayer_asr_name"
+				                />
+				        </RelativeLayout>
+					</android.support.v7.widget.CardView>
+					
+                	<!-- Maghrib -->
+                	<android.support.v7.widget.CardView
+                	    android:id="@+id/cardview_maghrib"
+				        android:layout_width="wrap_content"
+		        		android:layout_height="wrap_content"
+		        		android:clickable="true">
+		                
+		                <RelativeLayout
+		            		android:layout_width="match_parent"
+		            		android:layout_height="wrap_content"
+				            android:padding="16dp">
+		                    
+		                    <LinearLayout 
+		                        android:id="@+id/notif_icon_maghrib"
+		                        android:layout_width="wrap_content"
+		    					android:layout_height="wrap_content"
+		    					android:orientation="vertical" >
+		            			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/onpray_icon_maghrib"
+					                android:layout_alignParentLeft="true"
+					                android:layout_alignParentTop="true"
+					                android:layout_marginRight="16dp"
+					                android:src="@drawable/volume_mute"/>
+					 			
+					 			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/before_pray_icon_maghrib"
+					                android:paddingTop="10dp"
+					                android:layout_below="@+id/onpray_icon_maghrib"
+					                android:layout_marginRight="16dp"/>            
+		                    </LinearLayout>
+		 
+		            
+				            <TextView
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:id="@+id/prayer_maghrib_name"
+				                android:layout_toRightOf="@+id/notif_icon_maghrib"
+				                android:layout_alignParentTop="true"
+				                android:textSize="15sp"
+				                android:text="@string/prayer_maghrib_name"
+				                />
+				 
+				            <TextView
+				                android:id="@+id/prayer_maghrib_time"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_toRightOf="@+id/notif_icon_maghrib"
+				                android:layout_below="@+id/prayer_maghrib_name"
+				                />
+				        </RelativeLayout>
+					</android.support.v7.widget.CardView>
 
-                    <TextView
-                        android:id="@+id/prayer_dhuhr_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="end"
-                        android:text="@string/prayer_dhuhr_name" />
-
-                    <TextView
-                        android:id="@+id/prayer_dhuhr_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="start" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tbl_row_asr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
 
-                    <TextView
-                        android:id="@+id/prayer_asr_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="end"
-                        android:text="@string/prayer_asr_name" />
-
-                    <TextView
-                        android:id="@+id/prayer_asr_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="start" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
-                </TableRow>
-
-                <TableRow
-                    android:id="@+id/tbl_row_maghrib"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center" >
-
-                    <TextView
-                        android:id="@+id/prayer_maghrib_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="end"
-                        android:text="@string/prayer_maghrib_name" />
-
-                    <TextView
-                        android:id="@+id/prayer_maghrib_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="start" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
-                </TableRow>
-                
-                <TableRow
-                    android:id="@+id/tbl_row_isha"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center" >
-
-                    <TextView
-                        android:id="@+id/prayer_isha_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="end"
-                        android:text="@string/prayer_isha_name" />
-
-                    <TextView
-                        android:id="@+id/prayer_isha_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:gravity="start" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
+                    <!-- Isha -->
+                	<android.support.v7.widget.CardView
+						android:id="@+id/cardview_isha"
+				        android:layout_width="wrap_content"
+		        		android:layout_height="wrap_content"
+		        		android:clickable="true">
+		                
+		                <RelativeLayout
+		            		android:layout_width="match_parent"
+		            		android:layout_height="wrap_content"
+				            android:padding="16dp">
+		                    
+		                    <LinearLayout 
+		                        android:id="@+id/notif_icon_isha"
+		                        android:layout_width="wrap_content"
+		    					android:layout_height="wrap_content"
+		    					android:orientation="vertical" >
+		            			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/onpray_icon_isha"
+					                android:layout_alignParentLeft="true"
+					                android:layout_alignParentTop="true"
+					                android:layout_marginRight="16dp"
+					                android:src="@drawable/volume_mute"/>
+					 			
+					 			<ImageView
+					                android:layout_width="wrap_content"
+					                android:layout_height="wrap_content"
+					                android:id="@+id/before_pray_icon_isha"
+					                android:paddingTop="10dp"
+					                android:layout_below="@+id/onpray_icon_isha"
+					                android:layout_marginRight="16dp" />            
+		                    </LinearLayout>
+		 
+		            
+				            <TextView
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:id="@+id/prayer_isha_name"
+				                android:layout_toRightOf="@+id/notif_icon_isha"
+				                android:layout_alignParentTop="true"
+				                android:textSize="15sp"
+				                android:text="@string/prayer_isha_name"
+				                />
+				 
+				            <TextView
+				                android:id="@+id/prayer_isha_time"
+				                android:layout_width="wrap_content"
+				                android:layout_height="wrap_content"
+				                android:layout_toRightOf="@+id/notif_icon_isha"
+				                android:layout_below="@+id/prayer_isha_name"
+				                />
+				        </RelativeLayout>
+					</android.support.v7.widget.CardView>
                 </TableRow>
             </TableLayout>
         </LinearLayout>
