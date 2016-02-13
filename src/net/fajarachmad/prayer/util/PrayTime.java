@@ -122,13 +122,13 @@ public class PrayTime {
 
       // Time Names
       timeNames = new ArrayList<String>();
-      timeNames.add("Fajr");
-      timeNames.add("Sunrise");
-      timeNames.add("Dhuhr");
-      timeNames.add("Asr");
-      timeNames.add("Sunset");
-      timeNames.add("Maghrib");
-      timeNames.add("Isha");
+      timeNames.add("fajr");
+      timeNames.add("sunrise");
+      timeNames.add("dhuhr");
+      timeNames.add("asr");
+      timeNames.add("sunset");
+      timeNames.add("maghrib");
+      timeNames.add("isha");
 
       InvalidTime = "-----"; // The string used for invalid times
 

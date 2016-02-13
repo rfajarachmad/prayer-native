@@ -22,6 +22,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class LocationSettingActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.location_setting_layout);
 		
 		// Listview Data
@@ -170,6 +172,12 @@ public class LocationSettingActivity extends Activity {
 				
 			}
 		});
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		finish();
+		return true;
 	}
 	
 	public class LocationAdapter extends ArrayAdapter<Location> {

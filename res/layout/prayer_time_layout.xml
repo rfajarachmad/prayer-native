@@ -140,6 +140,7 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/tbl_row_dhuhr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
@@ -168,6 +169,7 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/tbl_row_asr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
@@ -196,6 +198,7 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/tbl_row_maghrib"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >
@@ -224,6 +227,7 @@
                 </TableRow>
                 
                 <TableRow
+                    android:id="@+id/tbl_row_isha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center" >

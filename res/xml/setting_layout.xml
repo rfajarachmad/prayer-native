@@ -8,7 +8,8 @@
             android:entries="@array/language"
             android:summary="%s"
             android:entryValues="@array/languageValues"
-            android:title="@string/pref_language" />
+            android:title="@string/pref_language"
+            android:defaultValue="en" />
         
         <CheckBoxPreference 
             android:key="prefDisabledNotification"
@@ -25,45 +26,47 @@
             android:entries="@array/calulationMethod"
             android:summary="%s"
             android:entryValues="@array/calulationMethodValues"
-            android:title="@string/pref_calculation_method" />
+            android:title="@string/pref_calculation_method"
+            android:defaultValue="3" />
         
         <ListPreference
             android:key="prefAsrMethod"
             android:entries="@array/asrMethod"
             android:summary="%s"
             android:entryValues="@array/ashMethodValues"
-            android:title="@string/pref_asr_method" />
+            android:title="@string/pref_asr_method"
+            android:defaultValue="0" />
         
         <PreferenceScreen 
         	android:title="@string/pref_manual_tunning"
         	android:persistent="false">
             
       		 <net.fajarachmad.prayer.preference.SliderPreference
-		        android:defaultValue="0"
+		        android:defaultValue="0.5"
 		        android:dialogMessage="Fajr"
 		        android:key="tune_fajr"
 		        android:title="Fajr" />
             	
       		 <net.fajarachmad.prayer.preference.SliderPreference
-		        android:defaultValue="0"
+		        android:defaultValue="0.5"
 		        android:dialogMessage="Dhuhr"
 		        android:key="tune_dhuhr"
 		        android:title="Dhuhr" />
       		 
       		 <net.fajarachmad.prayer.preference.SliderPreference
-		        android:defaultValue="0"
+		        android:defaultValue="0.5"
 		        android:dialogMessage="Asr"
 		        android:key="tune_asr"
 		        android:title="Asr" />
       		 
       		 <net.fajarachmad.prayer.preference.SliderPreference
-		        android:defaultValue="0"
+		        android:defaultValue="0.5"
 		        android:dialogMessage="Maghrib"
 		        android:key="tune_maghrib"
 		        android:title="Maghrib" />
       		 
       		 <net.fajarachmad.prayer.preference.SliderPreference
-		        android:defaultValue="0"
+		        android:defaultValue="0.5"
 		        android:dialogMessage="Isha"
 		        android:key="tune_isha"
 		        android:title="Isha" />

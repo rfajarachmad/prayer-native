@@ -21,12 +21,13 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -41,7 +42,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 
-public class PrayerTimeActivity extends Activity {
+public class PrayerTimeActivity extends Activity implements AppConstant{
 
 	private static String GOOGLE_TIMEZONE_API = "https://maps.googleapis.com/maps/api/timezone/json?";
 	private static String API_KEY = "AIzaSyAZVavLEgDEwXa-iOwRu_hmnco7X-YbNBI";
@@ -49,17 +50,19 @@ public class PrayerTimeActivity extends Activity {
 	/** Called when the activity is first created. */
 	private Prayer prayer;
 	private CountDownTimer timer;
-	private NotificationManager notificationManager;
 	private SharedPreferences sharedPrefs;
+	private AlarmManager alarmManager;
+	private List<String> tuningValues;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Remove title bar
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.prayer_time_layout);
-		
+		setComponentListener();
+		populateTuningValue();
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -68,28 +71,39 @@ public class PrayerTimeActivity extends Activity {
 
 		Location newLocation = getIntent().getParcelableExtra(Location.class.getName());
 		prayer = new Prayer();
-		
 		populatePreviousOrDefaultValue(prayer);
 		
-		notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);;
-		
+		//Define Location
 		Location currentLocation;
 		if (newLocation == null) {
 			currentLocation = getCurrentLocation(prayer);
 		} else {
 			currentLocation = newLocation;
 		}
-
 		prayer.setLocation(currentLocation);
 		
+		//Timezone
 		prayer.getLocation().setTimezone(getTimezone(prayer));;
+		
+		
 		try {
 			getPrayTime(prayer);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			Log.e("Prayer", e.getMessage(), e);
 		}
+		
 		save(prayer);
 		renderPrayerValue(prayer);
+	}
+	
+	private void populateTuningValue () {
+		tuningValues = new ArrayList<String>();
+		for (int i = -60; i <= 60; i++) {
+			tuningValues.add(String.valueOf(i));
+		}
+	}
+	
+	private void setComponentListener() {
 		findViewById(R.id.location_address).setOnClickListener(
 				new LocationButtonListener());
 		
@@ -98,11 +112,50 @@ public class PrayerTimeActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(PrayerTimeActivity.this, NotificationSetupActivity.class);
-				i.putExtra("PrayID", "fajr");
-	            startActivityForResult(i, 2);
+				i.putExtra("PrayID", FAJR_ID);
+	            startActivityForResult(i, NOTIFICATION_SETTING_ID);
 			}
-		});;
+		});
+		
+		findViewById(R.id.tbl_row_dhuhr).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(PrayerTimeActivity.this, NotificationSetupActivity.class);
+				i.putExtra("PrayID", DHUHR_ID);
+	            startActivityForResult(i, NOTIFICATION_SETTING_ID);
+			}
+		});
+		
+		findViewById(R.id.tbl_row_asr).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(PrayerTimeActivity.this, NotificationSetupActivity.class);
+				i.putExtra("PrayID", ASR_ID);
+	            startActivityForResult(i, NOTIFICATION_SETTING_ID);
+			}
+		});
+		
+		findViewById(R.id.tbl_row_maghrib).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(PrayerTimeActivity.this, NotificationSetupActivity.class);
+				i.putExtra("PrayID", MAGHRIB_ID);
+	            startActivityForResult(i, NOTIFICATION_SETTING_ID);
+			}
+		});
 
+		findViewById(R.id.tbl_row_isha).setOnClickListener(new OnClickListener() {
+	
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(PrayerTimeActivity.this, NotificationSetupActivity.class);
+				i.putExtra("PrayID", ISHA_ID);
+		        startActivityForResult(i, NOTIFICATION_SETTING_ID);
+			}
+		});
 	}
 	
 	private void save(Prayer prayer) {
@@ -154,17 +207,30 @@ public class PrayerTimeActivity extends Activity {
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
+	
+	private void cancelNotification(int id) {
+		Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		alarmManager.cancel(pendingIntent);
+	}
 
-    private Notification getNotification(String title, String content) {
+    private Notification getNotification(String title, String content, String sound) {
+    	
+    	Intent notificationIntent = new Intent(this, PrayerTimeActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        
     	NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(title);
         builder.setContentText(content);
+        builder.setContentIntent(contentIntent);
+        builder.setAutoCancel(true);
+        Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+ "://" + getPackageName() + "/raw/"+sound);
+        builder.setSound(alarmSound);
         builder.setSmallIcon(R.drawable.ic_launcher);
         return builder.build();
     }
@@ -172,7 +238,7 @@ public class PrayerTimeActivity extends Activity {
 	private int getTimezone(Prayer prayer) {
 
 		int timeZoneOffset = prayer.getLocation().getTimezone();
-		boolean isAutoDetectLocation = sharedPrefs.getBoolean("prefAutoDetectLocation", true); 
+		boolean isAutoDetectLocation = sharedPrefs.getBoolean(PREF_AUTODETECT_LOCATION_KEY, true); 
 		if (isAutoDetectLocation && prayer.getLocation().getLatitude() != 0
 				&& prayer.getLocation().getLongitude() != 0) {
 			try {
@@ -354,7 +420,7 @@ public class PrayerTimeActivity extends Activity {
 	private Location getCurrentLocation(Prayer prayer) {
 		GPSTracker gpsTracker = new GPSTracker(this);
 		Location location = prayer.getLocation();
-		boolean isAutoDetectLocation = sharedPrefs.getBoolean("prefAutoDetectLocation", true);
+		boolean isAutoDetectLocation = sharedPrefs.getBoolean(PREF_AUTODETECT_LOCATION_KEY, true);
 		if (isAutoDetectLocation) {
 			if (gpsTracker.getIsGPSTrackingEnabled()) {
 				double latitude = gpsTracker.getLatitude();
@@ -403,16 +469,16 @@ public class PrayerTimeActivity extends Activity {
 		cal.setTime(now);
 		
 		int[] offsets = new int[7];
-		offsets[0] = prayer.getSetting().getFajrtuning();
+		offsets[0] = Integer.valueOf(resolveTuningValue(Float.valueOf(sharedPrefs.getFloat(PREF_TUNE_FAJR_KEY, 0)), tuningValues));
 		offsets[1] = 0;
-		offsets[2] = prayer.getSetting().getDhuhrtuning();
-		offsets[3] = prayer.getSetting().getAsrtuning();
+		offsets[2] = Integer.valueOf(resolveTuningValue(Float.valueOf(sharedPrefs.getFloat(PREF_TUNE_DHUHR_KEY, 0)), tuningValues));
+		offsets[3] = Integer.valueOf(resolveTuningValue(Float.valueOf(sharedPrefs.getFloat(PREF_TUNE_ASR_KEY, 0)), tuningValues));
 		offsets[4] = 0;
-		offsets[5] = prayer.getSetting().getMaghribtuning();
-		offsets[6] = prayer.getSetting().getIshatuning();
+		offsets[5] = Integer.valueOf(resolveTuningValue(Float.valueOf(sharedPrefs.getFloat(PREF_TUNE_MAGHRIB_KEY, 0)), tuningValues));
+		offsets[6] = Integer.valueOf(resolveTuningValue(Float.valueOf(sharedPrefs.getFloat(PREF_TUNE_ISHA_KEY, 0)), tuningValues));
 		
-		prayers.setCalcMethod(prayer.getSetting().getMethod());
-		prayers.setAsrJuristic(prayer.getSetting().getAsrMethod());
+		prayers.setCalcMethod(Integer.valueOf(sharedPrefs.getString(PREF_CALULATION_METHOD_KEY, DEFAULT_CALC_METHOD)));
+		prayers.setAsrJuristic(Integer.valueOf(sharedPrefs.getString(PREF_ASR_METHOD_KEY, DEFAULT_ASR_METHOD)));
 		prayers.tune(offsets);
 		ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal, latitude,
 				longitude, timezone);
@@ -421,50 +487,51 @@ public class PrayerTimeActivity extends Activity {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-d H:m");
 		SimpleDateFormat dateOlnyFormat = new SimpleDateFormat("yyyy-MM-d");
 		
-		notificationManager.cancelAll();
+		//notificationManager.cancelAll();
 		for (int i = 0; i < prayerTimes.size(); i++) {
 			Log.i("Prayer", prayerNames.get(i) + " - " + prayerTimes.get(i));
 
 			TextView txtName = null;
 			TextView txtTime = null;
 
-			if (!prayerNames.get(i).equals("Sunset")) {
+			if (!prayerNames.get(i).equals(SUNSET_ID)) {
 				String prayerDateTimeStr = dateOlnyFormat.format(prayer.getToday()) + " "+ prayerTimes.get(i) + ":00";
 				Date prayerDateaTime = dateTimeFormat.parse(prayerDateTimeStr);
 				list.add(new PrayerTime(prayerNames.get(i), prayerTimes.get(i), prayerDateaTime));
 				
 				//send notification
-				if (prayerDateaTime.compareTo(now) > 0) {
+				cancelNotification(i);
+				cancelNotification(i+10);
+				boolean isNotificationDisable = sharedPrefs.getBoolean(PREF_DISABLED_NOTIFICATION_KEY, false);
+				if (prayerDateaTime.compareTo(now) > 0 && !isNotificationDisable) {
 					long delay = prayerDateaTime.getTime() - now.getTime();
-					String message = "It's time to pray "+prayerNames.get(i);
-					String title = prayerNames.get(i)+" Notification";
-					scheduleNotification(getNotification(title, message), i, Long.valueOf(delay).intValue());
+					sendPrayAlarm(i, prayerNames.get(i), delay);
 				}
 			}
 
 			switch (prayerNames.get(i)) {
 
-			case "Fajr":
+			case FAJR_ID:
 				txtName = (TextView) findViewById(R.id.prayer_fajr_name);
 				txtTime = (TextView) findViewById(R.id.prayer_fajr_time);
 				break;
 
-			case "Dhuhr":
+			case DHUHR_ID:
 				txtName = (TextView) findViewById(R.id.prayer_dhuhr_name);
 				txtTime = (TextView) findViewById(R.id.prayer_dhuhr_time);
 				break;
 
-			case "Asr":
+			case ASR_ID:
 				txtName = (TextView) findViewById(R.id.prayer_asr_name);
 				txtTime = (TextView) findViewById(R.id.prayer_asr_time);
 				break;
 
-			case "Maghrib":
+			case MAGHRIB_ID:
 				txtName = (TextView) findViewById(R.id.prayer_maghrib_name);
 				txtTime = (TextView) findViewById(R.id.prayer_maghrib_time);
 				break;
 
-			case "Isha":
+			case ISHA_ID:
 				txtName = (TextView) findViewById(R.id.prayer_isha_name);
 				txtTime = (TextView) findViewById(R.id.prayer_isha_time);
 				break;
@@ -482,6 +549,39 @@ public class PrayerTimeActivity extends Activity {
 
 		return list;
 	}
+	
+	
+	private void sendPrayAlarm(int id, String parayerName, long delay){
+		String message = "It's time to pray "+parayerName;
+		String title = parayerName+" Notification";
+		
+		switch (parayerName) {
+		case ASR_ID:
+			if (sharedPrefs.getBoolean(PREF_ASR_ONPRAY_ALARM_KEY, false)) {
+				String sound = sharedPrefs.getString(PREF_ASR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
+				scheduleNotification(getNotification(title, message, sound), id, Long.valueOf(delay).intValue());
+			}
+			if (sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, false)) {
+				int beforeTimeMinute = Integer.valueOf(sharedPrefs.getString(PREF_ASR_BEFOREPRAY_NOTIFY_KEY, "0"));
+				long beforeTimeMilis = beforeTimeMinute * 60  * 1000;
+				long newDelay = delay - beforeTimeMilis;
+				if (newDelay > 0) {
+					String sound = sharedPrefs.getString(PREF_ASR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
+					message = beforeTimeMinute+ " minutes to pray "+parayerName;
+					scheduleNotification(getNotification(title, message, sound), id+10, Long.valueOf(newDelay).intValue());
+				}
+				
+			}
+			break;
+
+		default:
+			break;
+		}
+		
+		
+		
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -495,7 +595,7 @@ public class PrayerTimeActivity extends Activity {
  
         case R.id.menu_settings:
             Intent i = new Intent(this, SettingActivity.class);
-            startActivityForResult(i, 1);
+            startActivityForResult(i, APP_SETTING_ID);
             break;
  
         }
@@ -508,45 +608,80 @@ public class PrayerTimeActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		switch (requestCode) {
-		case 1:
-			setSetting();
+		case APP_SETTING_ID:
+			recalculatePrayerTime();
 			break;
-
+		case NOTIFICATION_SETTING_ID:
+			setNotificationSetting();
+			break;
 		}
 
 	}
 	
-	private void setSetting() {
-		String language = sharedPrefs.getString("prefLanguage", "en");
-		int method = Integer.valueOf(sharedPrefs.getString("prefCalculationMethod", "3"));
-		int asrMethod = Integer.valueOf(sharedPrefs.getString("prefAsrMethod", "0"));
-		boolean disableNotification = sharedPrefs.getBoolean("prefDisabledNotification", false);
-		float fajrtuning = sharedPrefs.getFloat("tune_fajr", 0);
-		float dhuhrtuning = sharedPrefs.getFloat("tune_dhuhr", 0);
-		float asrtuning = sharedPrefs.getFloat("tune_asr", 0);
-		float maghribtuning = sharedPrefs.getFloat("tune_maghrib", 0);
-		float ishatuning = sharedPrefs.getFloat("tune_isha", 0);
+	private void setNotificationSetting() {
+		String notifPrayId = sharedPrefs.getString("NotifPrayId", null);
 		
-		List<String> values = new ArrayList<String>();
-		for (int i = -60; i <= 60; i++) {
-			values.add(String.valueOf(i));
+		Boolean prefOnPrayAlarm = sharedPrefs.getBoolean(PREF_ONPRAY_ALARM_KEY, false);
+		String prefSoundOnPray = sharedPrefs.getString(PREF_ONPRAY_SOUND_KEY, null);
+		Boolean prefBeforePrayAlarm = sharedPrefs.getBoolean(PREF_BEFOREPRAY_ALARM_KEY, false);
+		String prefNotifyBefore = sharedPrefs.getString(PREF_BEFOREPRAY_NOTIFY_KEY, DEFAULT_NOTIFY_TIME);
+		String prefSoundBeforePray = sharedPrefs.getString(PREF_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
+		
+		Editor editor = sharedPrefs.edit();
+		
+		switch (notifPrayId) {
+		case FAJR_ID:
+			editor.putBoolean(PREF_FAJR_ONPRAY_ALARM_KEY, prefOnPrayAlarm);
+			editor.putString(PREF_FAJR_ONPRAY_SOUND_KEY, prefSoundOnPray);
+			editor.putBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, prefBeforePrayAlarm);
+			editor.putString(PREF_FAJR_BEFOREPRAY_NOTIFY_KEY, prefNotifyBefore);
+			editor.putString(PREF_FAJR_BEFOREPRAY_SOUND_KEY, prefSoundBeforePray);
+			break;
+		
+		case DHUHR_ID:
+			editor.putBoolean(PREF_DHUHR_ONPRAY_ALARM_KEY, prefOnPrayAlarm);
+			editor.putString(PREF_DHUHR_ONPRAY_SOUND_KEY, prefSoundOnPray);
+			editor.putBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, prefBeforePrayAlarm);
+			editor.putString(PREF_DHUHR_BEFOREPRAY_NOTIFY_KEY, prefNotifyBefore);
+			editor.putString(PREF_DHUHR_BEFOREPRAY_SOUND_KEY, prefSoundBeforePray);
+			break;
+		
+		case ASR_ID:
+			editor.putBoolean(PREF_ASR_ONPRAY_ALARM_KEY, prefOnPrayAlarm);
+			editor.putString(PREF_ASR_ONPRAY_SOUND_KEY, prefSoundOnPray);
+			editor.putBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, prefBeforePrayAlarm);
+			editor.putString(PREF_ASR_BEFOREPRAY_NOTIFY_KEY, prefNotifyBefore);
+			editor.putString(PREF_ASR_BEFOREPRAY_SOUND_KEY, prefSoundBeforePray);
+			break;
+		
+		case MAGHRIB_ID:
+			editor.putBoolean(PREF_MAGHRIB_ONPRAY_ALARM_KEY, prefOnPrayAlarm);
+			editor.putString(PREF_MAGHRIB_ONPRAY_SOUND_KEY, prefSoundOnPray);
+			editor.putBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, prefBeforePrayAlarm);
+			editor.putString(PREF_MAGHRIB_BEFOREPRAY_NOTIFY_KEY, prefNotifyBefore);
+			editor.putString(PREF_MAGHRIB_BEFOREPRAY_SOUND_KEY, prefSoundBeforePray);
+			break;
+			
+		case ISHA_ID:
+			editor.putBoolean(PREF_ISHA_ONPRAY_ALARM_KEY, prefOnPrayAlarm);
+			editor.putString(PREF_ISHA_ONPRAY_SOUND_KEY, prefSoundOnPray);
+			editor.putBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, prefBeforePrayAlarm);
+			editor.putString(PREF_ISHA_BEFOREPRAY_NOTIFY_KEY, prefNotifyBefore);
+			editor.putString(PREF_ISHA_BEFOREPRAY_SOUND_KEY, prefSoundBeforePray);
+			break;
+		default:
+			break;
 		}
 		
-		prayer.getSetting().setLanguage(language);
-		prayer.getSetting().setMethod(method);
-		prayer.getSetting().setAsrMethod(asrMethod);
-		prayer.getSetting().setDisablednotification(disableNotification);
-		prayer.getSetting().setFajrtuning(resolveTuningValue(Float.valueOf(fajrtuning), values));
-		prayer.getSetting().setDhuhrtuning(resolveTuningValue(Float.valueOf(dhuhrtuning), values));
-		prayer.getSetting().setAsrtuning(resolveTuningValue(Float.valueOf(asrtuning), values));
-		prayer.getSetting().setMaghribtuning(resolveTuningValue(Float.valueOf(maghribtuning), values));
-		prayer.getSetting().setIshatuning(resolveTuningValue(Float.valueOf(ishatuning), values));
-		
+		editor.commit();
+		recalculatePrayerTime();
+	}
+	
+	private void recalculatePrayerTime() {
 		try {
 			getPrayTime(prayer);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("Prayer",e.getMessage(),e);
 		}
 		renderPrayerValue(prayer);
 	}

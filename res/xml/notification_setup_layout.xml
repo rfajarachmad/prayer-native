@@ -11,6 +11,7 @@
             android:key="prefSoundOnPray"
             android:title="Sound"
             android:summary="%s"
+            android:defaultValue="azan1"
             android:entries="@array/sounds"
             android:entryValues="@array/soundValues"/>
     </PreferenceCategory>
@@ -24,6 +25,7 @@
         <ListPreference android:key="prefNotifyBefore"
             android:title="Notify before"
             android:summary="%s"
+            android:defaultValue="5"
             android:entries="@array/notifyBefore"
             android:entryValues="@array/notifyBeforeValue"/>
         
@@ -31,6 +33,7 @@
             android:key="prefSoundBeforePray"
             android:title="Sound"
             android:summary="%s"
+            android:defaultValue="azan1"
             android:entries="@array/sounds"
             android:entryValues="@array/soundValues"/>
     </PreferenceCategory>

@@ -36,6 +36,7 @@
             android:name="net.fajarachmad.prayer.activity.NotificationSetupActivity"
             android:label="Notification Setup">
         </activity>
+        <receiver android:name="net.fajarachmad.prayer.notification.NotificationPublisher" />
     </application>
 
 </manifest>

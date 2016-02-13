@@ -8,7 +8,6 @@ public class Prayer {
 	private Location location = new Location();
 	private PrayerTime currentPrayer;
 	private PrayerTime nextPrayer;
-	private Setting setting = new Setting();
 	private List<PrayerTime> prayerTimes;
 	
 	public Location getLocation() {
@@ -49,14 +48,6 @@ public class Prayer {
 
 	public void setNextPrayer(PrayerTime nextPrayer) {
 		this.nextPrayer = nextPrayer;
-	}
-
-	public Setting getSetting() {
-		return setting;
-	}
-
-	public void setSetting(Setting setting) {
-		this.setting = setting;
 	}
 
 }

@@ -7,14 +7,14 @@ import net.fajarachmad.prayer.R;
 import net.fajarachmad.prayer.preference.SliderPreference;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.MenuItem;
 
 public class SettingActivity extends PreferenceActivity {
 	
@@ -24,7 +24,7 @@ public class SettingActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		addPreferencesFromResource(R.xml.setting_layout);
 		
 		sharedPrefs =  PreferenceManager.getDefaultSharedPreferences(this);
@@ -91,6 +91,11 @@ public class SettingActivity extends PreferenceActivity {
 				return false;
 			}
 		});
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+	    return true;
 	}
 	
 	private String getValueByKey(int id, int valueId, String key) {
