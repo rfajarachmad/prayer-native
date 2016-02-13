@@ -29,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:baselineAlignBottom="true"
-                android:contentDescription="@string/localtion_address"
                 android:cropToPadding="true"
                 android:scaleType="fitStart"
                 android:src="@drawable/ic_launcher" />
@@ -45,7 +44,6 @@
             android:layout_weight="0.75"
             android:background="@android:color/holo_green_dark"
             android:gravity="center"
-            android:text="@string/localtion_address"
             android:textColor="@android:color/white"
             android:layout_margin="5dp" />
 
@@ -53,7 +51,6 @@
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/localtion_address"
             android:src="@drawable/ic_launcher" />
     </LinearLayout>
 
@@ -67,7 +64,7 @@
             android:id="@+id/upcoming_prayer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upcoming Prayer" />
+            android:text="@string/upcoming_prayer" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,21 +77,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:text="@string/next_prayer_name"
                 android:textSize="25dp" />
 
             <TextView
                 android:id="@+id/next_pray_time"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/next_prayer_time" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/remaining_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="8 Hrs 52 Mins Left to FAJR" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <ScrollView
@@ -129,13 +123,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:text="@string/prayer_fajr_time" />
+                        android:gravity="start" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/localtion_address"
                         android:src="@drawable/ic_launcher" />
                 </TableRow>
 
@@ -158,13 +150,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:text="@string/prayer_dhuhr_time" />
+                        android:gravity="start" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/localtion_address"
                         android:src="@drawable/ic_launcher" />
                 </TableRow>
 
@@ -187,13 +177,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:text="@string/prayer_asr_time" />
+                        android:gravity="start" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/localtion_address"
                         android:src="@drawable/ic_launcher" />
                 </TableRow>
 
@@ -216,13 +204,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:text="@string/prayer_maghrib_time" />
+                        android:gravity="start" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/localtion_address"
                         android:src="@drawable/ic_launcher" />
                 </TableRow>
                 
@@ -245,13 +231,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="start"
-                        android:text="@string/prayer_isha_time" />
+                        android:gravity="start" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/localtion_address"
                         android:src="@drawable/ic_launcher" />
                 </TableRow>
             </TableLayout>

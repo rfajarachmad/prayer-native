@@ -20,8 +20,10 @@ public class NotificationSetupActivity extends PreferenceActivity implements App
 	protected void onCreate(Bundle savedInstanceState) {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		String prayID = getIntent().getStringExtra("PrayID");
+		String prayName = getIntent().getStringExtra("PrayName");
+		String title = getResources().getString(R.string.notification_setup_title, prayName);
 		
-		this.setTitle(prayID+" Notification Setup");
+		this.setTitle(title);
 		sharedPrefs =  PreferenceManager.getDefaultSharedPreferences(this);
 		Editor editor = sharedPrefs.edit();
 		editor.putString("NotifPrayId", prayID);

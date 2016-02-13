@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class PrayerTime {
 	
+	private String prayId;
 	private String prayName;
 	private String prayTime;
 	private Date prayDate;
@@ -15,10 +16,11 @@ public class PrayerTime {
 		this.prayTime = prayTime;
 	}
 	
-	public PrayerTime(String prayName, String prayTime, Date prayDate) {
+	public PrayerTime(String prayId, String prayName, String prayTime, Date prayDate) {
 		this.prayName = prayName;
 		this.prayTime = prayTime;
 		this.prayDate = prayDate;
+		this.prayId = prayId;
 	}
 	
 	public String getPrayName() {
@@ -38,6 +40,14 @@ public class PrayerTime {
 	}
 	public void setPrayDate(Date prayDate) {
 		this.prayDate = prayDate;
+	}
+
+	public String getPrayId() {
+		return prayId;
+	}
+
+	public void setPrayId(String prayId) {
+		this.prayId = prayId;
 	}
 	
 	

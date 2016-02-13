@@ -2,11 +2,14 @@ package net.fajarachmad.prayer.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.fajarachmad.prayer.R;
 import net.fajarachmad.prayer.preference.SliderPreference;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -16,7 +19,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
-public class SettingActivity extends PreferenceActivity {
+public class SettingActivity extends PreferenceActivity implements AppConstant {
 	
 	SharedPreferences sharedPrefs;
 	
@@ -25,6 +28,7 @@ public class SettingActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		setTitle(R.string.menu_settings);
 		addPreferencesFromResource(R.xml.setting_layout);
 		
 		sharedPrefs =  PreferenceManager.getDefaultSharedPreferences(this);
@@ -35,59 +39,64 @@ public class SettingActivity extends PreferenceActivity {
 			values.add(String.valueOf(i));
 		}
 		
-		((SliderPreference)findPreference("tune_fajr")).setSummary(values.toArray(new String[0]));;
-		((SliderPreference)findPreference("tune_dhuhr")).setSummary(values.toArray(new String[0]));;
-		((SliderPreference)findPreference("tune_asr")).setSummary(values.toArray(new String[0]));;
-		((SliderPreference)findPreference("tune_maghrib")).setSummary(values.toArray(new String[0]));;
-		((SliderPreference)findPreference("tune_isha")).setSummary(values.toArray(new String[0]));;
+		((SliderPreference)findPreference(PREF_TUNE_FAJR_KEY)).setSummary(values.toArray(new String[0]));;
+		((SliderPreference)findPreference(PREF_TUNE_DHUHR_KEY)).setSummary(values.toArray(new String[0]));;
+		((SliderPreference)findPreference(PREF_TUNE_ASR_KEY)).setSummary(values.toArray(new String[0]));;
+		((SliderPreference)findPreference(PREF_TUNE_MAGHRIB_KEY)).setSummary(values.toArray(new String[0]));;
+		((SliderPreference)findPreference(PREF_TUNE_ISHA_KEY)).setSummary(values.toArray(new String[0]));;
 		
-		((SliderPreference)findPreference("tune_fajr")).setDialogMessage(((SliderPreference)findPreference("tune_fajr")).getSummary());
-		((SliderPreference)findPreference("tune_dhuhr")).setDialogMessage(((SliderPreference)findPreference("tune_dhuhr")).getSummary());
-		((SliderPreference)findPreference("tune_asr")).setDialogMessage(((SliderPreference)findPreference("tune_asr")).getSummary());
-		((SliderPreference)findPreference("tune_maghrib")).setDialogMessage(((SliderPreference)findPreference("tune_maghrib")).getSummary());
-		((SliderPreference)findPreference("tune_isha")).setDialogMessage(((SliderPreference)findPreference("tune_isha")).getSummary());
+		((SliderPreference)findPreference(PREF_TUNE_FAJR_KEY)).setDialogMessage(((SliderPreference)findPreference(PREF_TUNE_FAJR_KEY)).getSummary());
+		((SliderPreference)findPreference(PREF_TUNE_DHUHR_KEY)).setDialogMessage(((SliderPreference)findPreference(PREF_TUNE_DHUHR_KEY)).getSummary());
+		((SliderPreference)findPreference(PREF_TUNE_ASR_KEY)).setDialogMessage(((SliderPreference)findPreference(PREF_TUNE_ASR_KEY)).getSummary());
+		((SliderPreference)findPreference(PREF_TUNE_MAGHRIB_KEY)).setDialogMessage(((SliderPreference)findPreference(PREF_TUNE_MAGHRIB_KEY)).getSummary());
+		((SliderPreference)findPreference(PREF_TUNE_ISHA_KEY)).setDialogMessage(((SliderPreference)findPreference(PREF_TUNE_ISHA_KEY)).getSummary());
 		
-		Preference resetPref = findPreference("tune_reset");
+		Preference resetPref = findPreference(PREF_TUNE_RESET_KEY);
 		resetPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			
 			@SuppressLint("UseValueOf")
 			@Override
 			public boolean onPreferenceClick(Preference arg0) {
-				((SliderPreference)findPreference("tune_fajr")).setValue(new Float(0.5));
-				((SliderPreference)findPreference("tune_dhuhr")).setValue(new Float(0.5));
-				((SliderPreference)findPreference("tune_asr")).setValue(new Float(0.5));
-				((SliderPreference)findPreference("tune_maghrib")).setValue(new Float(0.5));
-				((SliderPreference)findPreference("tune_isha")).setValue(new Float(0.5));
+				((SliderPreference)findPreference(PREF_TUNE_FAJR_KEY)).setValue(DEFAULT_MANUAL_TUNE);
+				((SliderPreference)findPreference(PREF_TUNE_DHUHR_KEY)).setValue(DEFAULT_MANUAL_TUNE);
+				((SliderPreference)findPreference(PREF_TUNE_ASR_KEY)).setValue(DEFAULT_MANUAL_TUNE);
+				((SliderPreference)findPreference(PREF_TUNE_MAGHRIB_KEY)).setValue(DEFAULT_MANUAL_TUNE);
+				((SliderPreference)findPreference(PREF_TUNE_ISHA_KEY)).setValue(DEFAULT_MANUAL_TUNE);
 				return false;
 			}
 		});
 		
-		findPreference("prefLanguage").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		findPreference(PREF_LANGUAGE_KEY).setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object value) {
-				findPreference("prefLanguage").setSummary(getValueByKey(R.array.languageValues, R.array.language, value.toString()));
-				((ListPreference)findPreference("prefLanguage")).setValue(value.toString());
+				findPreference(PREF_LANGUAGE_KEY).setSummary(getValueByKey(R.array.languageValues, R.array.language, value.toString()));
+				((ListPreference)findPreference(PREF_LANGUAGE_KEY)).setValue(value.toString());
+			     setLocale(value.toString());
+			     Intent intent = new Intent(SettingActivity.this, SettingActivity.class);
+			     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			     startActivity(intent);
+			
 				return false;
 			}
 		});
 		
-		findPreference("prefCalculationMethod").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		findPreference(PREF_CALULATION_METHOD_KEY).setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object value) {
-				findPreference("prefCalculationMethod").setSummary(getValueByKey(R.array.calulationMethodValues, R.array.calulationMethod, value.toString()));
-				((ListPreference)findPreference("prefCalculationMethod")).setValue(value.toString());
+				findPreference(PREF_CALULATION_METHOD_KEY).setSummary(getValueByKey(R.array.calulationMethodValues, R.array.calulationMethod, value.toString()));
+				((ListPreference)findPreference(PREF_CALULATION_METHOD_KEY)).setValue(value.toString());
 				return false;
 			}
 		});
 		
-		findPreference("prefAsrMethod").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		findPreference(PREF_ASR_METHOD_KEY).setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object value) {
-				findPreference("prefAsrMethod").setSummary(getValueByKey(R.array.ashMethodValues, R.array.asrMethod, value.toString()));
-				((ListPreference)findPreference("prefAsrMethod")).setValue(value.toString());
+				findPreference(PREF_ASR_METHOD_KEY).setSummary(getValueByKey(R.array.ashMethodValues, R.array.asrMethod, value.toString()));
+				((ListPreference)findPreference(PREF_ASR_METHOD_KEY)).setValue(value.toString());
 				return false;
 			}
 		});
@@ -106,6 +115,14 @@ public class SettingActivity extends PreferenceActivity {
                 break;
         }
         return getResources().getStringArray(valueId)[i];
+	}
+	
+	private void setLocale(String lang) {
+		Locale locale = new Locale(lang); 
+	    Locale.setDefault(locale);
+	    Configuration config = new Configuration();
+	    config.locale = locale;
+	    getApplicationContext().getResources().updateConfiguration(config,getApplicationContext().getResources().getDisplayMetrics());
 	}
 
 }

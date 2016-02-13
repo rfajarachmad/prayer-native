@@ -11,12 +11,12 @@
     </string-array>
     
     <string-array name="calulationMethod">
-        <item name="MWL">Muslim World League</item>
-        <item name="ISNA">Islamic Society of North America</item>
-        <item name="Egypt">Egyptian General Authority of Survey</item>
-        <item name="Makkah">Umm al-Qura University, Makkah</item>
-        <item name="Karachi">University of Islamic Sciences, Karachi</item>
-        <item name="Tehran">Institute of Geophysics, University of Tehran</item>
+        <item name="MWL">Liga Muslim Dunia</item>
+        <item name="ISNA">Masyarakat Islam Amerika Utara</item>
+        <item name="Egypt">Otoritas Umum Mesir</item>
+        <item name="Makkah">Universitas Umm al-Qura, Makkah</item>
+        <item name="Karachi">Universitas Sains Islam, Karachi</item>
+        <item name="Tehran">Institut Geophysic, Universitas Tehran</item>
     </string-array>
     
     <string-array name="calulationMethodValues">
@@ -30,7 +30,7 @@
     </string-array>
     
     <string-array name="asrMethod">
-        <item name="Standard">Shafii, Maliki, Jafari and Hanbali</item>
+        <item name="Standard">Shafii, Maliki, Jafari dan Hanbali</item>
         <item name="Hanafi">Hanafi</item>
     </string-array>
     
@@ -48,11 +48,11 @@
      </string-array>
     	
      <string-array name="notifyBefore">
-         <item name="5">5 Mins</item>
-         <item name="10">10 Mins</item>
-         <item name="15">15 Mins</item>
-         <item name="30">30 Mins</item>
-         <item name="60">60 Mins</item>
+         <item name="5">5 Menit</item>
+         <item name="10">10 Menit</item>
+         <item name="15">15 Menit</item>
+         <item name="30">30 Menit</item>
+         <item name="60">60 Menit</item>
      </string-array>
      
      <string-array name="notifyBeforeValue">

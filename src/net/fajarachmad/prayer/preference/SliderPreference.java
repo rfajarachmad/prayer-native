@@ -66,7 +66,7 @@ public class SliderPreference extends DialogPreference {
 		if (mSummaries != null && mSummaries.length > 0) {
 			int index = (int) (mValue * mSummaries.length);
 			index = Math.min(index, mSummaries.length - 1);
-			return mSummaries[index]+" Min";
+			return mSummaries[index]+" "+getContext().getResources().getString(R.string.pref_minutes);
 		} else {
 			return super.getSummary();
 		}

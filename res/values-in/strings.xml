@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Prayer Time</string>
+	<string name="location_setting_title">Pengaturan Lokasi</string>
+	
+	<string name="upcoming_prayer">Shalat selanjutnya</string>
+	
+	<string name="search_location">Cari lokasi</string>
+	<string name="use_current_location">Gunakan lokasi saat ini</string>
+	
+	<string name="prayer_imsak_name">Imsak</string>
+	<string name="prayer_fajr_name">Shubuh</string>
+	<string name="prayer_dhuhr_name">Dzuhur</string>
+	<string name="prayer_asr_name">Ashar</string>
+	<string name="prayer_maghrib_name">Maghrib</string>
+	<string name="prayer_isha_name">Isya</string>
+	
+	<string name="menu_settings">Pengaturan</string>
+	<string name="pref_disable_notification">Nonaktifkan notifikasi</string>
+    <string name="pref_disable_notification_summary">Matikan seluruh notifikasi</string>
+    <string name="pref_language">Bahasa</string>
+    <string name="pref_calculation_method">Metode perhitungan</string>
+    <string name="pref_asr_method">Metode perhitungan Ashar</string>
+    
+    <string name="pref_general">Umum</string>
+    <string name="pref_time_calculation">Perhitungan waktu</string>
+    <string name="pref_manual_tunning">Tuning manual</string>
+    
+    <string name="praf_location_title">Lokasi</string>
+    <string name="pref_auto_detect_location">Dekteksi otomatis</string>
+    <string name="pref_auto_detect_location_summary">Otomatis menggunakan lokasi saat ini</string>
+	
+    <string name="pref_on_prayer">Saat waktu shalat</string>
+    <string name="pref_before_prayer">Sebelum waktu shalat</string>
+    <string name="pref_alarm">Alarm</string>
+    <string name="pref_sound">Suara</string>
+    <string name="pref_notify_before">Ingatkan sebelum</string>
+    
+    <string name="default_notify_before">5</string>
+    <string name="default_alarm">azan1</string>
+    
+    <string name="pref_minutes">Menit</string>
+    <string name="pref_hours">Jam</string>
+    <string name="left_until">menuju waktu</string>
+    
+    <string name="notification_setup_title">Pengaturan Notifikasi %1$s</string>
+    
+    <!-- Notification -->
+    <string name="notif_on_prayer">Waktunya sholat</string>
+    <string name="notif_before_pray">menit menuju</string>
+    <string name="notif_title">Prayer Time</string>
+    
+</resources>

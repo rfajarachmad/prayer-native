@@ -17,6 +17,7 @@ public interface AppConstant {
 	public static String DEFAULT_LANGUAGE = "en";
 	public static String DEFAULT_CALC_METHOD = "3";
 	public static String DEFAULT_ASR_METHOD = "0";
+	public static float DEFAULT_MANUAL_TUNE = (float) 0.5;
 	
 	public static String PREF_LANGUAGE_KEY = "prefLanguage";
 	public static String PREF_CALULATION_METHOD_KEY = "prefCalculationMethod";
@@ -29,6 +30,7 @@ public interface AppConstant {
 	public static String PREF_TUNE_ASR_KEY = "tune_asr";
 	public static String PREF_TUNE_MAGHRIB_KEY = "tune_maghrib";
 	public static String PREF_TUNE_ISHA_KEY = "tune_isha";
+	public static String PREF_TUNE_RESET_KEY = "tune_reset";
 	
 	public static String PREF_ONPRAY_ALARM_KEY = "prefOnPrayAlarm";
 	public static String PREF_ONPRAY_SOUND_KEY = "prefSoundOnPray";

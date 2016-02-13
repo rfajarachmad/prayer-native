@@ -33,7 +33,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class LocationSettingActivity extends Activity {
+public class LocationSettingActivity extends Activity implements AppConstant {
 	
 	// List view
     private ListView lv;
@@ -63,7 +63,7 @@ public class LocationSettingActivity extends Activity {
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         
-        geocoder = new Geocoder(this, new Locale(sharedPrefs.getString("prefLanguage", "en")));
+        geocoder = new Geocoder(this, new Locale(sharedPrefs.getString(PREF_LANGUAGE_KEY, DEFAULT_LANGUAGE)));
         // Adding items to listview
         /*adapter = new ArrayAdapter<String>(this, R.layout.list_location_layout, R.id.product_name, products);
         lv.setAdapter(adapter);*/   

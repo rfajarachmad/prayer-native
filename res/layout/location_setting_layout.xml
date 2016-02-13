@@ -10,7 +10,7 @@
     <EditText android:id="@+id/inputSearch"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Search Location"
+        android:hint="@string/search_location"
         android:inputType="textVisiblePassword"/>
     
     <Button
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Use current location" />
+        android:text="@string/use_current_location" />
   
     <!-- List View -->
     <ListView
