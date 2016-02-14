@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 
 import net.fajarachmad.prayer.R;
+import net.fajarachmad.prayer.adapter.ScreenSlidePagerAdapter;
+import net.fajarachmad.prayer.fragment.PrayerInfoFragment;
 import net.fajarachmad.prayer.model.Location;
 import net.fajarachmad.prayer.model.Prayer;
 import net.fajarachmad.prayer.model.PrayerTime;
@@ -19,7 +21,6 @@ import net.fajarachmad.prayer.util.PrayTime;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -35,7 +36,11 @@ import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,10 +50,12 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PrayerTimeActivity extends Activity implements AppConstant{
+public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 
 	private static String GOOGLE_TIMEZONE_API = "https://maps.googleapis.com/maps/api/timezone/json?";
 	private static String API_KEY = "AIzaSyAZVavLEgDEwXa-iOwRu_hmnco7X-YbNBI";
+	
+	private static final int NUM_PAGES = 5;
 
 	/** Called when the activity is first created. */
 	private Prayer prayer;
@@ -56,6 +63,8 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 	private SharedPreferences sharedPrefs;
 	private AlarmManager alarmManager;
 	private List<String> tuningValues;
+	private ViewPager mPager;
+	private ScreenSlidePagerAdapter mPagerAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,12 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 		setComponentListener();
 		populateTuningValue();
 		
+		// Instantiate a ViewPager and a PagerAdapter.
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(0);
+        
 		
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -311,8 +326,14 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 						+ String.valueOf(mnt) + " "+getResources().getString(R.string.pref_minutes)+" "+getResources().getString(R.string.left_until)
 						+ " "+prayer.getNextPrayer().getPrayName();
 
-				((TextView) findViewById(R.id.remaining_time)).setText(text);
-
+				//((TextView) findViewById(R.id.remaining_time)).setText(text);
+				//mPagerAdapter.getPrayerInfoFragment().getNextRemainingTime().setText(text);
+				PrayerInfoFragment page = (PrayerInfoFragment) mPagerAdapter.getFragment(0);
+				if (page == null) {
+					mPagerAdapter.setRemainigTime(text);
+				} else {
+					page.updateRemainingTime(text);
+				}
 			}
 
 		}.start();
@@ -352,7 +373,7 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 
 			if (prayer.getToday().compareTo(dateFrom) > 0 && prayer.getToday().compareTo(dateTo) < 0) {
 				prayer.setCurrentPrayer(new PrayerTime(prayIdFrom,prayNameFrom, prayTimeFrom, dateFrom));
-				prayer.setNextPrayer(new PrayerTime(prayIdTo, prayNameTo, prayTimeFrom, dateTo));
+				prayer.setNextPrayer(new PrayerTime(prayIdTo, prayNameTo, prayTimeTo, dateTo));
 				solved = true;
 			}
 		}
@@ -385,9 +406,23 @@ public class PrayerTimeActivity extends Activity implements AppConstant{
 
 	private void renderPrayerValue(Prayer prayer) {
 		((TextView) findViewById(R.id.location_address)).setText(prayer.getLocation().getCity()+", "+prayer.getLocation().getCountry());
-		((TextView) findViewById(R.id.next_prayer)).setText(prayer.getNextPrayer().getPrayName());
-		((TextView) findViewById(R.id.next_pray_time)).setText(prayer.getNextPrayer().getPrayTime());
-		((TextView) findViewById(R.id.upcoming_prayer)).setText(getResources().getString(R.string.upcoming_prayer));
+		//((TextView) findViewById(R.id.next_prayer)).setText(prayer.getNextPrayer().getPrayName());
+		//((TextView) findViewById(R.id.next_pray_time)).setText(prayer.getNextPrayer().getPrayTime());
+		//((TextView) findViewById(R.id.upcoming_prayer)).setText(getResources().getString(R.string.upcoming_prayer));
+		
+		/*mPagerAdapter.getPrayerInfoFragment().setNextPrayerName(prayer.getNextPrayer().getPrayName());
+		mPagerAdapter.getPrayerInfoFragment().setNextPrayerTime(prayer.getNextPrayer().getPrayTime());
+		mPagerAdapter.getPrayerInfoFragment().setRemainigTime(getResources().getString(R.string.upcoming_prayer));*/
+		PrayerInfoFragment page = (PrayerInfoFragment) mPagerAdapter.getFragment(0);
+		if (page == null) {
+			mPagerAdapter.setNextPrayerName(prayer.getNextPrayer().getPrayName());
+			mPagerAdapter.setNextPrayerTime(prayer.getNextPrayer().getPrayTime());
+			mPagerAdapter.setUpcomingPray(getResources().getString(R.string.upcoming_prayer));
+		} else {
+			page.updateValue(prayer.getNextPrayer().getPrayName(), prayer.getNextPrayer().getPrayTime(), getResources().getString(R.string.upcoming_prayer));
+		}
+		
+		
 		
 		for (int i = 0; i < prayer.getPrayerTimes().size(); i++) {
 			String prayId = prayer.getPrayerTimes().get(i).getPrayId();
