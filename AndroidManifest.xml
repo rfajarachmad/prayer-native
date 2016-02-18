@@ -37,6 +37,13 @@
             android:label="Notification Setup">
         </activity>
         <receiver android:name="net.fajarachmad.prayer.notification.NotificationPublisher" />
+        <receiver android:name="net.fajarachmad.prayer.receiver.PrayerTimeReceiver">
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW"/> 
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="net.fajarachmad.prayer.service.PrayerTimeService"></service>
     </application>
 
 </manifest>

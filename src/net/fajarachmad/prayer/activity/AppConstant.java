@@ -2,8 +2,20 @@ package net.fajarachmad.prayer.activity;
 
 public interface AppConstant {
 	
+	public static String GOOGLE_TIMEZONE_API = "https://maps.googleapis.com/maps/api/timezone/json?";
+	public static String API_KEY = "AIzaSyAZVavLEgDEwXa-iOwRu_hmnco7X-YbNBI";
+	
 	public static int NOTIFICATION_SETTING_ID = 2;
 	public static int APP_SETTING_ID = 1;
+	
+	public static String ACTION = "action";
+	public static String ACTION_PLAY_SOUND = "net.fajarachmad.prayer.play_sound";
+	public static String ACTION_STOP_SOUND = "net.fajarachmad.prayer.stop_sound";
+	public static String ACTION_GET_PRAYER_TIME = "net.fajarachmad.prayer.get_prayer_time";
+	public static String ACTION_PRAYER_TIME_CHANGED = "net.fajarachmad.prayer.prayer_time_changed";
+	public static String ACTION_REMAINING_TIME_CHANGED = "net.fajarachmad.prayer.remaining_time_changed";
+	
+	public static String NOTIFICATION_SOUND = "notificationSound";
 	
 	public static String FAJR_ID = "fajr";
 	public static String ASR_ID = "asr";
@@ -18,6 +30,9 @@ public interface AppConstant {
 	public static String DEFAULT_CALC_METHOD = "3";
 	public static String DEFAULT_ASR_METHOD = "0";
 	public static float DEFAULT_MANUAL_TUNE = (float) 0.5;
+	public static double DEFAULT_LATITUDE = -6.2087634;
+	public static double DEFAULT_LONGITUDE = 106.84559899999999;
+	public static int DEFAULT_TIMEZONE = 7;
 	
 	public static String PREF_LANGUAGE_KEY = "prefLanguage";
 	public static String PREF_CALULATION_METHOD_KEY = "prefCalculationMethod";
