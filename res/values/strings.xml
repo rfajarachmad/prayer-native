@@ -47,8 +47,10 @@
     <string name="notification_setup_title">%1$s Notification Setup</string>
     
     <!-- Notification -->
-    <string name="notif_on_prayer">I\'ts time to pray</string>
+    <string name="notif_on_prayer">It\'s time to pray</string>
     <string name="notif_before_pray">minutes to pray</string>
     <string name="notif_title">Prayer Time</string>
+    
+    <string name="notif_dismiss">Dismiss</string>
     
 </resources>

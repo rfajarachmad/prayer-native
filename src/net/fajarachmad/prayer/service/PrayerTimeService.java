@@ -15,6 +15,7 @@ import net.fajarachmad.prayer.activity.PrayerTimeActivity;
 import net.fajarachmad.prayer.model.Location;
 import net.fajarachmad.prayer.model.Prayer;
 import net.fajarachmad.prayer.model.PrayerTime;
+import net.fajarachmad.prayer.notification.DismissButtonListener;
 import net.fajarachmad.prayer.notification.NotificationPublisher;
 import net.fajarachmad.prayer.receiver.PrayerTimeReceiver;
 import net.fajarachmad.prayer.util.GPSTracker;
@@ -46,7 +47,7 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 	private List<String> tuningValues;
 	private CountDownTimer timer;
 	private AlarmManager alarmManager;
-	private MediaPlayer mediaPlayer;
+	private static MediaPlayer mediaPlayer;
 	
 	private Prayer prayer;
 	private Gson gson;
@@ -78,6 +79,7 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 			break;
 		case ACTION_PLAY_SOUND:
 			playAlarmSound(intent);
+			reloadPrayerTime(intent);
 			break;
 		case ACTION_STOP_SOUND:
 			stopAlarmSound(intent);
@@ -85,6 +87,12 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 			break;
 		}
 		
+	}
+	
+	private void reloadPrayerTime(Intent intent) {
+		populatePreviousOrDefaultValue();
+		getPrayerTime(intent);
+		save();
 	}
 	
 	private void renderPrayerTimeToView() {
@@ -246,8 +254,8 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 			String prayIdTo = prayer.getPrayerTimes().get(i + 1).getPrayId();
 			
 			
-			String dateFromStr = dateOlnyFormat.format(prayer.getToday()) + " " + prayTimeFrom + ":00";
-			String dateToStr = dateOlnyFormat.format(prayer.getToday()) + " " + prayTimeTo + ":00";
+			String dateFromStr = dateOlnyFormat.format(new Date()) + " " + prayTimeFrom + ":00";
+			String dateToStr = dateOlnyFormat.format(new Date()) + " " + prayTimeTo + ":00";
 
 			dateFrom = dateTimeFormat.parse(dateFromStr);
 			dateTo = dateTimeFormat.parse(dateToStr);
@@ -256,17 +264,18 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 					+ "-->" + prayTimeTo
 					+ "-->" + dateFrom + "-->" + dateTo);
 
-			if (prayer.getToday().compareTo(dateFrom) > 0 && prayer.getToday().compareTo(dateTo) < 0) {
+			if (new Date().compareTo(dateFrom) > 0 && new Date().compareTo(dateTo) < 0) {
 				prayer.setCurrentPrayer(new PrayerTime(prayIdFrom,prayNameFrom, prayTimeFrom, dateFrom));
 				prayer.setNextPrayer(new PrayerTime(prayIdTo, prayNameTo, prayTimeTo, dateTo));
 				solved = true;
+				break;
 			}
 		}
 
 		if (!solved) {
 
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(prayer.getToday());
+			cal.setTime(new Date());
 			cal.add(Calendar.DATE, 1);
 			Date tomorrow = cal.getTime();
 			
@@ -305,7 +314,7 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 				 * try { getCurrentPrayer(prayer); showRemainingTime(prayer); }
 				 * catch (ParseException e) { Log.e("Prayer", e.getMessage()); }
 				 */
-				Looper.myLooper().quit();
+				//Looper.myLooper().quit();
 			}
 
 			@Override
@@ -393,7 +402,7 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 				break;
 			}
 			
-			if (!prayId.equals(SUNSET_ID)) {
+			if (!prayId.equals(SUNSET_ID) && !prayId.equals(SUNRISE_ID)) {
 				String prayerDateTimeStr = dateOlnyFormat.format(new Date()) + " "+ prayTime + ":00";
 				Date prayerDateaTime = dateTimeFormat.parse(prayerDateTimeStr);
 				
@@ -410,11 +419,13 @@ public class PrayerTimeService extends IntentService implements AppConstant {
 		cancelNotification(idx);
 		cancelNotification(idx+10);
 		long delay = date.getTime() - new Date().getTime();
-		sendPrayAlarm(idx, prayId, prayName, delay);
+		if (delay > 0) {
+			sendPrayAlarm(idx, prayId, prayName, delay);
+		}
 	}
 	
 	private void sendPrayAlarm(int id, String prayId, String parayerName, long delay){
-		String message = getResources().getString(R.string.notif_on_prayer)+parayerName;
+		String message = getResources().getString(R.string.notif_on_prayer)+" "+parayerName;
 		String title = getResources().getString(R.string.notif_title);
 		boolean isNotificationDisable = sharedPrefs.getBoolean(PREF_DISABLED_NOTIFICATION_KEY, false);
 		
@@ -537,21 +548,16 @@ public class PrayerTimeService extends IntentService implements AppConstant {
     	Intent notificationIntent = new Intent(this, PrayerTimeActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         
+        Intent dismissIntent = new Intent(this, DismissButtonListener.class);
+        PendingIntent pendingButtonIntent = PendingIntent.getBroadcast(this, 0,  dismissIntent, 0);
+        
     	NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setAutoCancel(false);
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setContentIntent(contentIntent);
-        
-        //Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE+ "://" + getPackageName() + "/raw/"+sound);
-        //builder.setSound(alarmSound);
-        
-        
-        /*Notification notification = builder.build();
-        notification.flags |= Notification.FLAG_INSISTENT;
-        notification.sound = alarmSound;*/
-        
+        builder.addAction(R.drawable.turn_notifications_off_button, getResources().getString(R.string.notif_dismiss), pendingButtonIntent);
         return builder.build();
     }
 	

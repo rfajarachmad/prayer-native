@@ -36,35 +36,35 @@ public class NotificationSetupActivity extends PreferenceActivity implements App
 		
 		switch (prayID) {
 		case FAJR_ID:
-			onPrayAlarm = sharedPrefs.getBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, true);
+			onPrayAlarm = sharedPrefs.getBoolean(PREF_FAJR_ONPRAY_ALARM_KEY, true);
 			onPraySound = sharedPrefs.getString(PREF_FAJR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 			beforePrayAlrm = sharedPrefs.getBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, true);
 			beforePrayNotif = sharedPrefs.getString(PREF_FAJR_BEFOREPRAY_NOTIFY_KEY, DEFAULT_NOTIFY_TIME);
 			beforePraySound = sharedPrefs.getString(PREF_FAJR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 			break;
 		case DHUHR_ID:
-			onPrayAlarm = sharedPrefs.getBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, true);
+			onPrayAlarm = sharedPrefs.getBoolean(PREF_DHUHR_ONPRAY_ALARM_KEY, true);
 			onPraySound = sharedPrefs.getString(PREF_DHUHR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 			beforePrayAlrm = sharedPrefs.getBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, true);
 			beforePrayNotif = sharedPrefs.getString(PREF_DHUHR_BEFOREPRAY_NOTIFY_KEY, DEFAULT_NOTIFY_TIME);
 			beforePraySound = sharedPrefs.getString(PREF_DHUHR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 			break;
 		case ASR_ID:
-			onPrayAlarm = sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, true);
+			onPrayAlarm = sharedPrefs.getBoolean(PREF_ASR_ONPRAY_ALARM_KEY, true);
 			onPraySound = sharedPrefs.getString(PREF_ASR_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 			beforePrayAlrm = sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, true);
 			beforePrayNotif = sharedPrefs.getString(PREF_ASR_BEFOREPRAY_NOTIFY_KEY, DEFAULT_NOTIFY_TIME);
 			beforePraySound = sharedPrefs.getString(PREF_ASR_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 			break;
 		case MAGHRIB_ID:
-			onPrayAlarm = sharedPrefs.getBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, true);
+			onPrayAlarm = sharedPrefs.getBoolean(PREF_MAGHRIB_ONPRAY_ALARM_KEY, true);
 			onPraySound = sharedPrefs.getString(PREF_MAGHRIB_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 			beforePrayAlrm = sharedPrefs.getBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, true);
 			beforePrayNotif = sharedPrefs.getString(PREF_MAGHRIB_BEFOREPRAY_NOTIFY_KEY, DEFAULT_NOTIFY_TIME);
 			beforePraySound = sharedPrefs.getString(PREF_MAGHRIB_BEFOREPRAY_SOUND_KEY, DEFAULT_SOUND);
 			break;
 		case ISHA_ID:
-			onPrayAlarm = sharedPrefs.getBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, true);
+			onPrayAlarm = sharedPrefs.getBoolean(PREF_ISHA_ONPRAY_ALARM_KEY, true);
 			onPraySound = sharedPrefs.getString(PREF_ISHA_ONPRAY_SOUND_KEY, DEFAULT_SOUND);
 			beforePrayAlrm = sharedPrefs.getBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, true);
 			beforePrayNotif = sharedPrefs.getString(PREF_ISHA_BEFOREPRAY_NOTIFY_KEY, DEFAULT_NOTIFY_TIME);

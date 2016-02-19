@@ -23,6 +23,7 @@ public interface AppConstant {
 	public static String MAGHRIB_ID = "maghrib";
 	public static String ISHA_ID = "isha";
 	public static String SUNSET_ID = "sunset";
+	public static String SUNRISE_ID = "sunrise";
 	
 	public static String DEFAULT_SOUND = "azan1";
 	public static String DEFAULT_NOTIFY_TIME = "5";

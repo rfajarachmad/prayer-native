@@ -4,19 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import net.fajarachmad.prayer.R;
-import net.fajarachmad.prayer.adapter.ScreenSlidePagerAdapter;
-import net.fajarachmad.prayer.fragment.PrayerInfoFragment;
-import net.fajarachmad.prayer.model.Location;
-import net.fajarachmad.prayer.model.Prayer;
-import net.fajarachmad.prayer.service.PrayerTimeService;
+import com.google.gson.Gson;
+
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -30,8 +25,12 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
+import net.fajarachmad.prayer.R;
+import net.fajarachmad.prayer.adapter.ScreenSlidePagerAdapter;
+import net.fajarachmad.prayer.fragment.PrayerInfoFragment;
+import net.fajarachmad.prayer.model.Location;
+import net.fajarachmad.prayer.model.Prayer;
+import net.fajarachmad.prayer.service.PrayerTimeService;
 
 public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 
@@ -58,7 +57,7 @@ public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 		populateTuningValue();
 		stopAlarmSound();
 		closeNotification();
-		
+		updateNotificationIcon();
 		// Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
@@ -320,12 +319,12 @@ public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 	}
 
 	private void updateFajrNotificationIcon() {
-		if (sharedPrefs.getBoolean(PREF_FAJR_ONPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_FAJR_ONPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.onpray_icon_fajr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
 		} else {
 			((ImageView) findViewById(R.id.onpray_icon_fajr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 		}
-		if (sharedPrefs.getBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_FAJR_BEFOREPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.before_pray_icon_fajr)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 		} else {
 			((ImageView) findViewById(R.id.before_pray_icon_fajr)).setImageDrawable(null);
@@ -333,12 +332,12 @@ public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 	}
 
 	private void updateDhuhrNotificationIcon() {
-		if (sharedPrefs.getBoolean(PREF_DHUHR_ONPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_DHUHR_ONPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.onpray_icon_dhuhr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
 		} else {
 			((ImageView) findViewById(R.id.onpray_icon_dhuhr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 		}
-		if (sharedPrefs.getBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_DHUHR_BEFOREPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.before_pray_icon_dhuhr)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 		} else {
 			((ImageView) findViewById(R.id.before_pray_icon_dhuhr)).setImageDrawable(null);
@@ -346,12 +345,12 @@ public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 	}
 
 	private void updateAsrNotificationIcon() {
-		if (sharedPrefs.getBoolean(PREF_ASR_ONPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_ASR_ONPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.onpray_icon_asr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
 		} else {
 			((ImageView) findViewById(R.id.onpray_icon_asr)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 		}
-		if (sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_ASR_BEFOREPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.before_pray_icon_asr)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 		} else {
 			((ImageView) findViewById(R.id.before_pray_icon_asr)).setImageDrawable(null);
@@ -359,12 +358,12 @@ public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 	}
 
 	private void updateMaghribNotificationIcon() {
-		if (sharedPrefs.getBoolean(PREF_MAGHRIB_ONPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_MAGHRIB_ONPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.onpray_icon_maghrib)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
 		} else {
 			((ImageView) findViewById(R.id.onpray_icon_maghrib)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 		}
-		if (sharedPrefs.getBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_MAGHRIB_BEFOREPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.before_pray_icon_maghrib)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 		} else {
 			((ImageView) findViewById(R.id.before_pray_icon_maghrib)).setImageDrawable(null);
@@ -372,12 +371,12 @@ public class PrayerTimeActivity extends FragmentActivity implements AppConstant{
 	}
 
 	private void updateIshaNotificationIcon() {
-		if (sharedPrefs.getBoolean(PREF_ISHA_ONPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_ISHA_ONPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.onpray_icon_isha)).setImageDrawable(getResources().getDrawable(R.drawable.volume_high));
 		} else {
 			((ImageView) findViewById(R.id.onpray_icon_isha)).setImageDrawable(getResources().getDrawable(R.drawable.volume_mute));
 		}
-		if (sharedPrefs.getBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, false)) {
+		if (sharedPrefs.getBoolean(PREF_ISHA_BEFOREPRAY_ALARM_KEY, true)) {
 			((ImageView) findViewById(R.id.before_pray_icon_isha)).setImageDrawable(getResources().getDrawable(R.drawable.alarm));
 		} else {
 			((ImageView) findViewById(R.id.before_pray_icon_isha)).setImageDrawable(null);

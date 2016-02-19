@@ -50,4 +50,6 @@
     <string name="notif_before_pray">menit menuju</string>
     <string name="notif_title">Prayer Time</string>
     
+    <string name="notif_dismiss">Berhentikan</string>
+    
 </resources>
